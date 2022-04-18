@@ -73,7 +73,7 @@ app.delete('/api/persons/:idNumber', (req, resp) => {
  
   if(person){
    {
-   // resp.json(person)
+   // resp.json(peson)
     console.log("Works")
    }
   
