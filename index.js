@@ -126,7 +126,7 @@ app.post('/api/person', (request, response) => {
 
 
 /*const PORT =3001
-app.listen(PORT, () => {
+app.listen(ORT, () => {
     console.log(`server running on port ${PORT}`)
 }) */
 //3.9
