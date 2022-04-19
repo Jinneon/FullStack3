@@ -7,7 +7,7 @@ Get http://localhost:3001/api/persons/
 Content-Type:  application/json
 
 {
-    "name":"Naeaw",
+    "name":"Naeawa",
     "number":"7739aa3"
 }
 .
