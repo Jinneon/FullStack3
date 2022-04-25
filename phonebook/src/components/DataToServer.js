@@ -1,7 +1,8 @@
 import axios from 'axios'
 
-//const link = 'http://localhost:3001/api/persons'
-const link = 'api/persons'
+const link = 'http://localhost:3001/api/persons'
+//const link = 'api/persons'
+//const link = 'https://backendphonebook3.herokuapp.com/'
 const getData = () => {
     const request = axios.get(link)
     return request.then(resp => {
@@ -18,10 +19,13 @@ const getData = () => {
 
   
   const deletePerson = (id) => {
-    const request = axios.delete(link+`/`+id.toString())
+    const request = axios.delete(link+`/`+id)
+    console.log(id + " id Datatoserver")
+    console.log(request + " requ")
     console.log("Pressed")
     return request.then(response => response)
   }
+  
   
   
 

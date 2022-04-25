@@ -18,24 +18,26 @@ const App = () => {
 
 
   useEffect(() => {
-    DataToServer
-      .getData()
+    console.log("Getting data")
+    DataToServer.getData()
       .then(personsToGet => {
+        console.log(personsToGet)
         setPersons(personsToGet)
       })}, [])
 
   
 
-  console.log('render',persons.length,'persons')
+   console.log('render',persons.length,'persons')
+ 
 
   //Delete name
   const deleteData = (event) => {
     event.preventDefault()
-    const id = parseInt(event.target.value)
+    const id = event.target.value
     
     const personToDelete = persons.find(person => person.id === id)
     console.log('button clicked', event.target)
-    if(window.confirm(`Delete ${personToDelete.name}?`)){
+    if(window.confirm(`Delete ${personToDelete}?`)){
       DataToServer
       .deletePerson(id)
       .then(id => {
@@ -47,6 +49,8 @@ const App = () => {
     console.log("Nothing")
   }
 }
+  
+
 
 //Add name
   const addName = (event) => 
@@ -89,12 +93,12 @@ const App = () => {
       const personSearched = persons.filter(person => person.name.includes(filter))
       const hNameChange = (event) =>
        {
-             console.log(event.target.value) 
+          //   console.log(event.target.value) 
            setNewName(event.target.value) 
            }
            const hNumberChange = (event) =>
        {
-             console.log(event.target.value) 
+          //   console.log(event.target.value) 
            setNewNumber(event.target.value) 
            }
            const hSearch = (event) => {

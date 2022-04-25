@@ -1,6 +1,8 @@
 const express = require('express');
 const morgan = require('morgan');
 const app = express()
+require('dotenv').config()
+const Person = require('./models/person')
 
 app.use(express.json())
 const cors = require('cors')
@@ -37,23 +39,25 @@ let persons = [
     id: 5,
   },
 ];
-const note = [
-  { 
-    "id": 1,
-    "name": "Testing yoyo", 
-    "number": "040-123456"
-  }
 
-]
-app.get('/api/persons', (req, res) =>{
+/*app.get('/api/persons', (req, res) =>{
     res.json(persons)
-})
+})*/
+app.get("/api/persons", (req, res) => {
+  Person.find({}).then(persons => {
+    res.json(persons)
+  })
+});
 
 app.get('/api/info', (req, res) =>{
-    const utcDate1 = new Date(Date.now());
+  Person.findById(req.params.id).then(note => {
+    response.json(note)
+  })
+})
+  /*  const utcDate1 = new Date(Date.now());
     res.send(`<p> Has  ${persons.length}
      persons </p> <p> ${utcDate1.toUTCString()}</p>`)
-})
+})*/
 
 app.get('/api/persons/:idNumber', (req, resp) =>{
   const idNumber = req.params.idNumber
@@ -68,8 +72,21 @@ app.get('/api/persons/:idNumber', (req, resp) =>{
   }
 })
 
-app.delete('/api/persons/:idNumber', (req, resp) => {
-  const idNumber = Number(req.params.idNumber)
+app.delete('/api/persons/:id', (req, resp,next) => {
+  Person.findByIdAndRemove(id)
+  console.log(id + " mongo id")
+      .then(result =>{
+          resp.status(204).end()
+      })
+      .catch(error => next(error))
+  console.log(request.params)
+  //const id = req.params.id
+  //console.log(id, typeof(id))
+
+  // persons = persons.filter(person => person.id != id)
+  // res.status(204).end()
+ 
+ /* const idNumber = Number(req.params.idNumber)
   const person = persons.filter(person => person.id != idNumber)
  
   if(person){
@@ -79,7 +96,7 @@ app.delete('/api/persons/:idNumber', (req, resp) => {
    }
   
 }
-  resp.status(204).end()
+  resp.status(204).end()*/
 })
 
 
@@ -97,33 +114,50 @@ app.post('/api/person', (request, response) => {
      const note = request.body 
       console.log(note)
         response.json(note)})*/
-
-        app.post("/api/persons", (req, res) => {
-          const bo = req.body;
+        
+        
+        app.post('/api/persons', (request, response, next) => {
+          const bo = request.body
+           console.log(bo)
+        
           if (!bo.name) {
-              return res.status(400).json({
-                  error: "Name is empty",
-              });
-          } else if (!bo.number) {
-              return res.status(400).json({
-                  error: "Number is empty",
-              });
-          } else if (persons.map(p => p.name).indexOf(bo.name) >= 0) {
-              return res.status(400).json({
-                  error: "Name must be unique",
-              });
+            return response.status(400).json({
+              error: 'Name is empty'
+            })
           }
-          
-          let person = {
+        
+          if (!bo.number) {
+            return response.status(400).json({
+              error: 'Number is empty'
+            })
+          }
+        
+          ///
+          Person.find({}).then(persons => {
+            console.log('persons: ', persons)
+        
+            if (persons.some(person => person.name === bo.name)) {
+              console.log('name must be unique')
+              return response.status(400).json({
+                error: 'name must be unique'
+              })
+            }
+        
+            let person = new Person({
               name: bo.name,
-              number: bo.number,
-              id: createID()
-          }
-          persons = persons.concat(person);
-          res.json(person)
-      });
-
-
+              number: bo.number
+            })
+            // id: generateId(),
+        
+            // save in mongod DV
+            // var opts = { runValidators: true };
+        
+            person.save().then(savedPerson => {
+              response.json(savedPerson)
+            })
+              .catch(error => next(error))
+          })
+        })
 
 
 /*const PORT =3001
@@ -131,7 +165,8 @@ app.listen(ORT, () => {
     console.log(`server running on port ${PORT}`)
 }) */
 //3.9
-const PORT = process.env.PORT || 3001
+//const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)  
 })
