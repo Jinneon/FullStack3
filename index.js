@@ -82,7 +82,7 @@ app.delete('/api/persons/:id', (req, resp,next) => {
   console.log(request.params)
   //const id = req.params.id
   //console.log(id, typeof(id))
-
+//
   // persons = persons.filter(person => person.id != id)
   // res.status(204).end()
  
