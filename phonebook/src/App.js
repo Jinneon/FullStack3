@@ -170,7 +170,7 @@ const validNumber = function(a) {
     
       
   
-     const personSearched = persons.filter(person => person.name.includes(filter))
+     const personSearched = Object.values(persons).filter(person => person.name.includes(filter))
       const hNameChange = (event) =>
        {
           //   console.log(event.target.value) 
