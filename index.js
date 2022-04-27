@@ -3,7 +3,7 @@ const express = require('express');
 const morgan = require('morgan');
 const app = express()
 require('dotenv').config()
-const Person = require('./models/person')
+const Person = require('./models/Person')
 const requestLogger = (request, response, next) => {
   console.log('Method:', request.method)
   console.log('Path:  ', request.path)
