@@ -8,6 +8,16 @@ Content-Type:  application/json
 
 {
     "name":"Jinnen",
-    "number":"777171111"
+    "number":"77771111"
+}
+
+DELETE  http://localhost:3001/api/persons/
+
+Content-Type:  application/json
+
+{
+    "name":"Jinneon",
+    "number":"77771111",
+    "id":"625fb0bca901325ee7b3c8"
 }
 .

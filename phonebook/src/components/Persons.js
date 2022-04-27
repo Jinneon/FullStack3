@@ -1,5 +1,6 @@
 import React from 'react'
 
+
 const Persons = ({deleteData,personSearched}) => {
   return (
     <div>{personSearched.map((person,id) => <div key={id}>{person.name} {person.number}

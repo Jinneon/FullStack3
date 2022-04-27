@@ -1,13 +1,15 @@
 const mongoose = require("mongoose");
-//var uniqueValidator = require("mongoose-unique-validator");
 
-//mongoose.set("useFindAndModify", false);
-//mongoose.set("useCreateIndex", true);
 
 const url = process.env.MONGODB_URI;
 
 console.log("connecting to", url);
 
+const validNumber = function(a) {
+    return /^\d{2,3}-\d+/.test(a)
+  }
+  
+  
 mongoose
     .connect(url, {
         useNewUrlParser: true,
@@ -31,9 +33,10 @@ const personSchema = new mongoose.Schema({
         type: String,
         minlength: 8,
         required: true,
+        validate: [ validNumber, "Following formats: 09-975318642 or 040-9876543" ]
     },
 });
-//personSchema.plugin(uniqueValidator);
+
 var opts = {
     runValidators: true
 };

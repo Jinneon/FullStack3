@@ -1,13 +1,22 @@
 const express = require('express');
+
 const morgan = require('morgan');
 const app = express()
 require('dotenv').config()
 const Person = require('./models/person')
+const requestLogger = (request, response, next) => {
+  console.log('Method:', request.method)
+  console.log('Path:  ', request.path)
+  console.log('Body:  ', request.body)
+  console.log('---')
+  next()
+}
 
-app.use(express.json())
 const cors = require('cors')
 app.use(cors())
 app.use(express.static('build'))
+app.use(express.json())
+app.use(requestLogger)
 //app.use(morgan)
 //app.usemorgan("tiny"));
 morgan.token('body', (req) => JSON.stringify(req.body))
@@ -40,9 +49,7 @@ let persons = [
   },
 ];
 
-/*app.get('/api/persons', (req, res) =>{
-    res.json(persons)
-})*/
+
 app.get("/api/persons", (req, res) => {
   Person.find({}).then(persons => {
     res.json(persons)
@@ -54,10 +61,7 @@ app.get('/api/info', (req, res) =>{
     response.json(note)
   })
 })
-  /*  const utcDate1 = new Date(Date.now());
-    res.send(`<p> Has  ${persons.length}
-     persons </p> <p> ${utcDate1.toUTCString()}</p>`)
-})*/
+
 
 app.get('/api/persons/:idNumber', (req, resp) =>{
   const idNumber = req.params.idNumber
@@ -67,53 +71,31 @@ app.get('/api/persons/:idNumber', (req, resp) =>{
       resp.json(person)
   }
   else{
-    console.log("Cant")
+    console.log("Person doesn´t exist")
       resp.status(404).end()
   }
 })
 
 app.delete('/api/persons/:id', (req, resp,next) => {
-  Person.findByIdAndRemove(id)
-  console.log(id + " mongo id")
-      .then(result =>{
-          resp.status(204).end()
-      })
-      .catch(error => next(error))
-  console.log(request.params)
-  //const id = req.params.id
-  //console.log(id, typeof(id))
-//
-  // persons = persons.filter(person => person.id != id)
-  // res.status(204).end()
+  //console.log(req.params)
  
- /* const idNumber = Number(req.params.idNumber)
-  const person = persons.filter(person => person.id != idNumber)
- 
-  if(person){
-   {
-   // resp.json(peson)
-    console.log("Works")
-   }
-  
-}
-  resp.status(204).end()*/
+
+  Person.findByIdAndRemove(req.params.id)
+    .then(result => {
+      resp.status(204).end()
+    })
+    .catch(error => next(error))
+    
 })
 
 
 
-/*app.use(express.json())
-app.post('/api/person', (request, response) => { 
-   const note = request.body 
-    console.log(note) 
-     response.json(note)})*/
+
      const createID = () => {
       return Math.floor(Math.random() * 1000000);
   };
   
- /* app.post('/api/persons', (request, response) => { 
-     const note = request.body 
-      console.log(note)
-        response.json(note)})*/
+ 
         
         
         app.post('/api/persons', (request, response, next) => {
@@ -137,9 +119,9 @@ app.post('/api/person', (request, response) => {
             console.log('persons: ', persons)
         
             if (persons.some(person => person.name === bo.name)) {
-              console.log('name must be unique')
+              console.log('Name must be unique')
               return response.status(400).json({
-                error: 'name must be unique'
+                error: 'Name must be unique'
               })
             }
         
@@ -147,10 +129,8 @@ app.post('/api/person', (request, response) => {
               name: bo.name,
               number: bo.number
             })
-            // id: generateId(),
-        
-            // save in mongod DV
-            // var opts = { runValidators: true };
+            
+   
         
             person.save().then(savedPerson => {
               response.json(savedPerson)
@@ -159,17 +139,37 @@ app.post('/api/person', (request, response) => {
           })
         })
 
+        const unknownEndpoint = (request, response) => {
+          response.status(404).send({ error: 'unknown endpoint' })
+        }
+        
+        app.use(unknownEndpoint)
+        
+        const errorHandler = (error, request, response, next) => {
+          console.error(error.message)
+        
+          if (error.name === 'CastError') {
+            return response.status(400).send({ error: 'malformatted id' })
+          }
+        
+          next(error)
+        }
+        
+        app.use(errorHandler)
+        
+        
 
 /*const PORT =3001
 app.listen(ORT, () => {
     console.log(`server running on port ${PORT}`)
 }) */
-//3.9
+
 //const PORT = process.env.PORT || 3001
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)  
 })
+
 
 
 
