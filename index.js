@@ -20,7 +20,7 @@ app.use(requestLogger)
 //app.use(morgan)
 //app.usemorgan("tiny"));
 morgan.token('body', (req) => JSON.stringify(req.body))
-//app.use(morgan(':metahod :url :status :res[content-length] - :response-time ms :body' ))
+///app.use(morgan(':metahod :url :status :res[content-length] - :response-time ms :body' ))
 let persons = [
   {
     name: 'Arto Hellas',
